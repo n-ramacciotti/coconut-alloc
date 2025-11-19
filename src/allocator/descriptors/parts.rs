@@ -105,7 +105,9 @@ impl<'a, 'b> PartsLockGuard<'a, 'b> {
     /// When the `bool` is `true` then the bitmap was empty after freeing
     /// `offset`.
     pub fn free(&mut self, offset: usize) -> Result<bool, AllocError> {
-        assert!(offset.is_multiple_of(self.parts_desc.alloc_size));
+        // assert!(offset.is_multiple_of(self.parts_desc.alloc_size));
+        let size = self.parts_desc.alloc_size;
+        assert!((size == 0 && offset == 0) || (size != 0 && offset % size == 0));
 
         let (bitmap, avail_mask) = self.get_bitmap_and_mask();
         let bit = offset / self.parts_desc.alloc_size;
